@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 typedef struct {int* vec; int size; int capacity;} Vector;
 
@@ -107,35 +107,39 @@ int main() {
 }
 
 int at(const Vector* vector, int pos) {
-    if (pos < vector->size) {
+    if (pos < vector->size && pos >= 0) {
         return *(vector->vec + pos);
     }
-    printf("The position is empty!\n");
+    printf("The position is empty or smaller than 0!\n");
     return 0;
 }
 
 bool empty(const Vector* vector) {
     if (vector->size == 0) {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 
 void PushBack(Vector* vector, int value) {
-    *(vector->vec + vector->size) = value;
-    vector->size++;
     if (vector->size == vector->capacity) {
         resize(vector);
     }
+    *(vector->vec + vector->size) = value;
+    vector->size++;
 }
 
 void PopBack(Vector* vector) {
+    if (vector->size == 0) {
+        printf("The vector is empty!\n");
+        return;
+    }
     *(vector->vec + vector->size - 1) = 0;
     --vector->size;
 }
 
 int front(const Vector* vector) {
-    if (empty(vector)) {
+    if (!empty(vector)) {
         return *(vector->vec);
     }
     printf("The vector is empty");
@@ -187,8 +191,10 @@ void erase(Vector* vector, int pos) {
 }
 
 void clear(Vector* vector) {
+    for (int i = 0; i < vector->size; ++i) {
+        vector->vec[i] = 0;
+    }
     vector->size = 0;
-    vector->capacity = 1;
     vector->vec = realloc(vector->vec, vector->capacity);
     vector->vec[0] = 0;
 }
