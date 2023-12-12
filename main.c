@@ -156,8 +156,7 @@ int back(const Vector* vector) {
 
 void Display(const Vector* vector) {
     for (int i = 0; i < vector->size; ++i) {
-        printf("vec[%d] = %d ", i, *(vector->vec + i));
-        printf("\n");
+        printf("vec[%d] = %d\n", i, *(vector->vec + i));
     }
 
     for (int i = vector->size; i < vector->capacity; ++i) {
