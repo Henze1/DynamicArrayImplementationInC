@@ -24,7 +24,6 @@ void resize(Vector*);
 int main() {
     Vector vector;
     vector.capacity = 1;
-    vector.size = 0;
     initializeVector(&vector, vector.capacity);
     int option;
     do {
@@ -67,11 +66,12 @@ int main() {
             case 5:
                 printf("Enter a position: ");
                 scanf("%d", &pos);
-                printf("Element at position %d: %d\n", pos, at(&vector, 0));
+                printf("Element at position %d: %d\n", pos, at(&vector, pos));
                 break;
             case 6:
                 printf("Vector...\n");
                 Display(&vector);
+                break;
             case 7:
                 printf("Size: %d\n", size(&vector));
                 break;
@@ -147,7 +147,7 @@ int front(const Vector* vector) {
 }
 
 int back(const Vector* vector) {
-    if (empty(vector)) {
+    if (!empty(vector)) {
         return *(vector->vec + vector->size - 1);
     }
     printf("The vector is empty");
@@ -158,6 +158,12 @@ void Display(const Vector* vector) {
     for (int i = 0; i < vector->size; ++i) {
         printf("vec[%d] = %d ", i, *(vector->vec + i));
         printf("\n");
+    }
+
+    for (int i = vector->size; i < vector->capacity; ++i) {
+        if (*(vector->vec + i) != 0) {
+            printf("vec[%d] = %d\n", i, *(vector->vec + i));
+        }
     }
 }
 
@@ -205,7 +211,9 @@ void shrink_to_fit(Vector* vector) {
 }
 
 void initializeVector(Vector* vector, int initialCapacity) {
-    vector->vec = malloc(initialCapacity * sizeof(int));
+    vector->vec = calloc(initialCapacity, sizeof(vector->vec));
+    vector->capacity = initialCapacity;
+    vector->size = 0;
 }
 
 void destroyVector(Vector* vector) {
@@ -220,4 +228,8 @@ void resize(Vector* vector) {
         printf("You are on maximum capacity and can't grow more than 100!\n");
     }
     vector->vec = realloc(vector->vec, vector->capacity);
+
+    for (int i = vector->capacity / 2; i < vector->capacity; ++i) {
+        vector->vec[i] = 0;
+    }
 }
