@@ -215,5 +215,9 @@ void destroyVector(Vector* vector) {
 
 void resize(Vector* vector) {
     vector->capacity *= 2;
+    if (vector->capacity > 100) {
+        vector->capacity = 100;
+        printf("You are on maximum capacity and can't grow more than 100!\n");
+    }
     vector->vec = realloc(vector->vec, vector->capacity);
 }
